@@ -105,7 +105,8 @@ class ConsumeSplunkProcessor(FlowFileSource):
 			optionalProps = " ".join((optionalProps,"-maxout",self.max_output))
 		if self.splunk_user != "":
 			if self.splunk_pw != None:
-				optionalProps = " ".join((optionalProps,"-auth \'",self.splunk_user,":",self.splunk_pw,"\'"))
+				optionalProps = " ".join((optionalProps,"-auth",self.splunk_user))
+				optionalProps = "".join((optionalProps, ":", "'", self.splunk_pw, "'"))
 			else:
 				self.logger.error("Splunk user account provided, but password is missing. Please update account properties.")
 		return optionalProps
@@ -118,6 +119,7 @@ class ConsumeSplunkProcessor(FlowFileSource):
 				return cmdOutput.stdout
 			else:
 				self.logger.error("Failed to export data from Splunk: " + cmdOutput.stderr)
+				return cmdOutput.stdout
 		except Exception as e:
 			self.logger.error(e)
 
